@@ -89,9 +89,20 @@ router.get('/:id', (req, res) => {
 
 // Create a new user
 router.post('/', (req, res) => {
+  const { userId, email, name } = req.body as Partial<User>;
+  if (!userId || !email || !name) {
+    res.status(400).send('Missing required fields: userId, email, name');
+    return;
+  }
+  if (users.some(u => u.userId === userId)) {
+    res.status(409).send('User with this userId already exists');
+    return;
+  }
   const newUser: User = {
-    ...req.body,
-    createdAt: req.body.createdAt || new Date().toISOString()
+    userId,
+    email,
+    name,
+    createdAt: (req.body as Partial<User>).createdAt || new Date().toISOString()
   };
   users.push(newUser);
   res.status(201).json(newUser);

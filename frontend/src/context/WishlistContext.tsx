@@ -23,6 +23,8 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | null>(null);
 
+let optimisticIdCounter = -1;
+
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const { userId, isLoggedIn } = useAuth();
   const queryClient = useQueryClient();
@@ -49,7 +51,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         await queryClient.cancelQueries(['wishlist', userId]);
         const previous = queryClient.getQueryData<WishlistItem[]>(['wishlist', userId]);
         const optimistic: WishlistItem = {
-          wishlistId: Date.now(),
+          wishlistId: optimisticIdCounter--,
           userId: userId!,
           productId,
           dateAdded: new Date().toISOString()
