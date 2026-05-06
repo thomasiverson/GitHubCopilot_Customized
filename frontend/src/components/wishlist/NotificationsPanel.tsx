@@ -4,7 +4,7 @@ import { useWishlist, WishlistNotification } from '../../context/WishlistContext
 import { useTheme } from '../../context/ThemeContext';
 
 export default function NotificationsPanel() {
-    const { notifications, dismissNotification, getNotifications } = useWishlist();
+    const { notifications, dismissNotification } = useWishlist();
     const { darkMode } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,6 @@ export default function NotificationsPanel() {
         e.stopPropagation();
         try {
             await dismissNotification(notificationId);
-            getNotifications();
         } catch (err) {
             console.error('Failed to dismiss notification', err);
         }

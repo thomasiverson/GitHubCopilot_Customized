@@ -245,7 +245,7 @@ export default function CollectionDetail() {
                                                 <input
                                                     type="checkbox"
                                                     checked={item.notifyOnPriceDrop}
-                                                    onChange={() => togglePriceAlert(item.wishlistItemId, item.notifyOnPriceDrop).then(() => refetch())}
+                                                    onChange={() => togglePriceAlert(item.wishlistItemId, item.notifyOnPriceDrop)}
                                                     className="rounded text-primary"
                                                 />
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -256,7 +256,7 @@ export default function CollectionDetail() {
                                                 <input
                                                     type="checkbox"
                                                     checked={item.notifyOnStockAvailable}
-                                                    onChange={() => toggleStockAlert(item.wishlistItemId, item.notifyOnStockAvailable).then(() => refetch())}
+                                                    onChange={() => toggleStockAlert(item.wishlistItemId, item.notifyOnStockAvailable)}
                                                     className="rounded text-primary"
                                                 />
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
