@@ -6,6 +6,11 @@ import { Order } from './models/order';
 import { OrderDetail } from './models/orderDetail';
 import { Delivery } from './models/delivery';
 import { OrderDetailDelivery } from './models/orderDetailDelivery';
+import { User } from './models/user';
+import { WishlistCollection } from './models/wishlistCollection';
+import { WishlistItem } from './models/wishlistItem';
+import { PriceHistory } from './models/priceHistory';
+import { Notification } from './models/notification';
 
 // Suppliers
 export const suppliers: Supplier[] = [
@@ -290,5 +295,202 @@ export const orderDetailDeliveries: OrderDetailDelivery[] = [
         deliveryId: 2,
         quantity: 20,
         notes: "Delivery"
+    }
+];
+
+// Users
+export const users: User[] = [
+    {
+        userId: 1,
+        email: "alice@example.com",
+        name: "Alice Purrington",
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        preferences: {
+            emailNotifications: true,
+            priceAlerts: true,
+            stockAlerts: true
+        }
+    },
+    {
+        userId: 2,
+        email: "bob@example.com",
+        name: "Bob Meowser",
+        createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        preferences: {
+            emailNotifications: false,
+            priceAlerts: true,
+            stockAlerts: false
+        }
+    }
+];
+
+// Wishlist Collections
+export const wishlistCollections: WishlistCollection[] = [
+    {
+        collectionId: 1,
+        userId: 1,
+        name: "Tech Gadgets",
+        description: "Cool smart tech gadgets for my cat",
+        isPublic: true,
+        createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+        sharedToken: "share-token-abc123"
+    },
+    {
+        collectionId: 2,
+        userId: 1,
+        name: "Office Supplies",
+        description: "Items for my home office setup",
+        isPublic: false,
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        collectionId: 3,
+        userId: 1,
+        name: "Gift Ideas",
+        description: "Gifts for friends with cats",
+        isPublic: true,
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        sharedToken: "share-token-def456"
+    },
+    {
+        collectionId: 4,
+        userId: 2,
+        name: "My Favorites",
+        description: "My top picks",
+        isPublic: false,
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+    }
+];
+
+// Wishlist Items
+export const wishlistItems: WishlistItem[] = [
+    {
+        wishlistItemId: 1,
+        userId: 1,
+        productId: 1,
+        collectionId: 1,
+        dateAdded: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "Great price, want to buy soon",
+        priceWhenAdded: 145.99,
+        notifyOnPriceDrop: true,
+        notifyOnStockAvailable: false
+    },
+    {
+        wishlistItemId: 2,
+        userId: 1,
+        productId: 4,
+        collectionId: 1,
+        dateAdded: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "For my outdoor cat",
+        priceWhenAdded: 79.99,
+        notifyOnPriceDrop: true,
+        notifyOnStockAvailable: true
+    },
+    {
+        wishlistItemId: 3,
+        userId: 1,
+        productId: 7,
+        collectionId: 2,
+        dateAdded: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "Would pair nicely with the feeder",
+        priceWhenAdded: 75.99,
+        notifyOnPriceDrop: true,
+        notifyOnStockAvailable: false
+    },
+    {
+        wishlistItemId: 4,
+        userId: 1,
+        productId: 10,
+        collectionId: 3,
+        dateAdded: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "Great gift idea",
+        priceWhenAdded: 49.99,
+        notifyOnPriceDrop: false,
+        notifyOnStockAvailable: false
+    },
+    {
+        wishlistItemId: 5,
+        userId: 2,
+        productId: 5,
+        collectionId: 4,
+        dateAdded: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "",
+        priceWhenAdded: 149.99,
+        notifyOnPriceDrop: true,
+        notifyOnStockAvailable: true
+    }
+];
+
+// Price History
+export const priceHistory: PriceHistory[] = [
+    {
+        priceHistoryId: 1,
+        productId: 1,
+        price: 159.99,
+        recordedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        priceHistoryId: 2,
+        productId: 1,
+        price: 145.99,
+        recordedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        priceHistoryId: 3,
+        productId: 1,
+        price: 129.99,
+        recordedAt: new Date().toISOString()
+    },
+    {
+        priceHistoryId: 4,
+        productId: 4,
+        price: 89.99,
+        recordedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        priceHistoryId: 5,
+        productId: 4,
+        price: 79.99,
+        recordedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        priceHistoryId: 6,
+        productId: 7,
+        price: 75.99,
+        recordedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+        priceHistoryId: 7,
+        productId: 7,
+        price: 69.99,
+        recordedAt: new Date().toISOString()
+    }
+];
+
+// Notifications
+export const notifications: Notification[] = [
+    {
+        notificationId: 1,
+        userId: 1,
+        type: 'price_drop',
+        productId: 1,
+        wishlistItemId: 1,
+        message: "Price dropped on SmartFeeder One! Was $145.99, now $129.99",
+        isRead: false,
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        oldPrice: 145.99,
+        newPrice: 129.99
+    },
+    {
+        notificationId: 2,
+        userId: 1,
+        type: 'price_drop',
+        productId: 7,
+        wishlistItemId: 3,
+        message: "Price dropped on Smart Fountain Flow+! Was $75.99, now $69.99",
+        isRead: false,
+        createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+        oldPrice: 75.99,
+        newPrice: 69.99
     }
 ];

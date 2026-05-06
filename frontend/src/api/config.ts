@@ -43,6 +43,17 @@ export const api = {
         headquarters: '/api/headquarters',
         deliveries: '/api/deliveries',
         orderDetails: '/api/order-details',
-        orderDetailDeliveries: '/api/order-detail-deliveries'
+        orderDetailDeliveries: '/api/order-detail-deliveries',
+        wishlistCollections: (userId: number) => `/api/wishlist/${userId}/collections`,
+        wishlistItems: (userId: number) => `/api/wishlist/${userId}/items`,
+        wishlistShared: (token: string) => `/api/wishlist/shared/${token}`,
+        wishlistCollectionItems: (userId: number, collectionId: number) =>
+            `/api/wishlist/${userId}/collections/${collectionId}/items`,
+        wishlistShare: (userId: number, collectionId: number) =>
+            `/api/wishlist/${userId}/collections/${collectionId}/share`,
+        wishlistNotifications: (userId: number) => `/api/wishlist/${userId}/notifications`,
+        dismissNotification: (userId: number, notificationId: number) =>
+            `/api/wishlist/${userId}/notifications/${notificationId}/dismiss`,
+        priceHistory: (productId: number) => `/api/price-history/${productId}`
     }
 };

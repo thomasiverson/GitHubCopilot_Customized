@@ -2,11 +2,15 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState } from 'react';
+import NotificationsPanel from './wishlist/NotificationsPanel';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [wishlistMenuOpen, setWishlistMenuOpen] = useState(false);
+  const { collections } = useWishlist();
 
   return (
     <nav className={`${darkMode ? 'bg-dark/95' : 'bg-white/95'} backdrop-blur-sm fixed w-full z-50 shadow-md transition-colors duration-300`}>
@@ -30,6 +34,62 @@ export default function Navigation() {
               <Link to="/" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>Home</Link>
               <Link to="/products" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>Products</Link>
               <Link to="/about" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>About us</Link>
+
+              {/* Wishlist dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setWishlistMenuOpen(!wishlistMenuOpen)}
+                  className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors`}
+                >
+                  Wishlist
+                  <svg
+                    className={`ml-1 h-4 w-4 transform ${wishlistMenuOpen ? 'rotate-180' : ''} transition-transform`}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                {wishlistMenuOpen && (
+                  <div className={`absolute left-0 mt-2 w-52 rounded-md shadow-lg ${darkMode ? 'bg-dark' : 'bg-white'} ring-1 ring-black ring-opacity-5 transition-colors z-50`}>
+                    <div className="py-1">
+                      <Link
+                        to="/wishlist"
+                        className={`block px-4 py-2 text-sm ${darkMode ? 'text-light hover:bg-primary hover:text-white' : 'text-gray-700 hover:bg-primary hover:text-white'} transition-colors`}
+                        onClick={() => setWishlistMenuOpen(false)}
+                      >
+                        View All Wishlists
+                      </Link>
+                      {collections.length > 0 && (
+                        <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-100'} my-1`}></div>
+                      )}
+                      {collections.slice(0, 4).map(collection => (
+                        <Link
+                          key={collection.collectionId}
+                          to={`/wishlist/collections/${collection.collectionId}`}
+                          className={`block px-4 py-2 text-sm ${darkMode ? 'text-gray-300 hover:bg-primary hover:text-white' : 'text-gray-600 hover:bg-primary hover:text-white'} transition-colors truncate`}
+                          onClick={() => setWishlistMenuOpen(false)}
+                        >
+                          📋 {collection.name}
+                        </Link>
+                      ))}
+                      <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-100'} my-1`}></div>
+                      <Link
+                        to="/wishlist"
+                        className={`block px-4 py-2 text-sm text-primary hover:bg-primary hover:text-white transition-colors`}
+                        onClick={() => setWishlistMenuOpen(false)}
+                      >
+                        + Create New Collection
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {isAdmin && (
                 <div className="relative">
                   <button 
@@ -68,6 +128,9 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Notifications bell */}
+            <NotificationsPanel />
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
