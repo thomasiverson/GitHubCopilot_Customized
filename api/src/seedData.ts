@@ -6,6 +6,8 @@ import { Order } from './models/order';
 import { OrderDetail } from './models/orderDetail';
 import { Delivery } from './models/delivery';
 import { OrderDetailDelivery } from './models/orderDetailDelivery';
+import { User } from './models/user';
+import { WishlistItem } from './models/wishlist';
 
 // Suppliers
 export const suppliers: Supplier[] = [
@@ -290,5 +292,45 @@ export const orderDetailDeliveries: OrderDetailDelivery[] = [
         deliveryId: 2,
         quantity: 20,
         notes: "Delivery"
+    }
+];
+
+// Users
+export const users: User[] = [
+    {
+        userId: 1,
+        email: "alice@octocat.com",
+        name: "Alice Pawson",
+        createdAt: new Date("2024-01-15").toISOString()
+    },
+    {
+        userId: 2,
+        email: "bob@github.com",
+        name: "Bob Whiskerton",
+        createdAt: new Date("2024-02-20").toISOString()
+    }
+];
+
+// Wishlist Items
+export const wishlistItems: WishlistItem[] = [
+    {
+        wishlistId: 1,
+        userId: 1,
+        productId: 1,
+        dateAdded: new Date("2024-03-01").toISOString(),
+        notes: "Looks great for my cats!"
+    },
+    {
+        wishlistId: 2,
+        userId: 1,
+        productId: 5,
+        dateAdded: new Date("2024-03-05").toISOString()
+    },
+    {
+        wishlistId: 3,
+        userId: 2,
+        productId: 3,
+        dateAdded: new Date("2024-03-10").toISOString(),
+        notes: "Birthday gift idea"
     }
 ];
