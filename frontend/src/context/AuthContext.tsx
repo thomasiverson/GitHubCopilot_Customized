@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (email && password) {
       setIsLoggedIn(true);
       setIsAdmin(email.endsWith('@github.com'));
-      setUserId(USER_ID_MAP[email] ?? 1);
+      setUserId(USER_ID_MAP[email] ?? null);
     }
   };
 
