@@ -83,16 +83,17 @@ router.get('/:productId', (req, res) => {
 router.post('/', (req, res) => {
     const { productId, price } = req.body;
     if (!productId || price === undefined) {
-        return res.status(400).json({ error: 'productId and price are required' });
+        res.status(400).json({ error: 'productId and price are required' });
+    } else {
+        const newRecord: PriceHistory = {
+            priceHistoryId: priceHistoryIdCounter++,
+            productId,
+            price,
+            recordedAt: new Date().toISOString()
+        };
+        priceHistoryRecords.push(newRecord);
+        res.status(201).json(newRecord);
     }
-    const newRecord: PriceHistory = {
-        priceHistoryId: priceHistoryIdCounter++,
-        productId,
-        price,
-        recordedAt: new Date().toISOString()
-    };
-    priceHistoryRecords.push(newRecord);
-    return res.status(201).json(newRecord);
 });
 
 export default router;

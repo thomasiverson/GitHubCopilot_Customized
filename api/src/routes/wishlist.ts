@@ -338,13 +338,14 @@ router.get('/shared/:token', (req, res) => {
         c => c.sharedToken === req.params.token && c.isPublic
     );
     if (!collection) {
-        return res.status(404).json({ error: 'Collection not found or not public' });
+        res.status(404).json({ error: 'Collection not found or not public' });
+    } else {
+        const collectionItems = items.filter(i => i.collectionId === collection.collectionId);
+        const products = seedProducts.filter(p =>
+            collectionItems.some(i => i.productId === p.productId)
+        );
+        res.json({ collection, items: collectionItems, products });
     }
-    const collectionItems = items.filter(i => i.collectionId === collection.collectionId);
-    const products = seedProducts.filter(p =>
-        collectionItems.some(i => i.productId === p.productId)
-    );
-    return res.json({ collection, items: collectionItems, products });
 });
 
 // GET /:userId/collections
@@ -378,10 +379,11 @@ router.put('/:userId/collections/:collectionId', (req, res) => {
         c => c.collectionId === collectionId && c.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Collection not found' });
+        res.status(404).json({ error: 'Collection not found' });
+    } else {
+        collections[index] = { ...collections[index], ...req.body, collectionId, userId };
+        res.json(collections[index]);
     }
-    collections[index] = { ...collections[index], ...req.body, collectionId, userId };
-    return res.json(collections[index]);
 });
 
 // DELETE /:userId/collections/:collectionId
@@ -392,16 +394,17 @@ router.delete('/:userId/collections/:collectionId', (req, res) => {
         c => c.collectionId === collectionId && c.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Collection not found' });
+        res.status(404).json({ error: 'Collection not found' });
+    } else {
+        // Move items from this collection to default (null)
+        items = items.map(item =>
+            item.collectionId === collectionId && item.userId === userId
+                ? { ...item, collectionId: null }
+                : item
+        );
+        collections.splice(index, 1);
+        res.status(204).send();
     }
-    // Move items from this collection to default (null)
-    items = items.map(item =>
-        item.collectionId === collectionId && item.userId === userId
-            ? { ...item, collectionId: null }
-            : item
-    );
-    collections.splice(index, 1);
-    return res.status(204).send();
 });
 
 // GET /:userId/collections/:collectionId/items
@@ -425,11 +428,12 @@ router.post('/:userId/collections/:collectionId/share', (req, res) => {
         c => c.collectionId === collectionId && c.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Collection not found' });
+        res.status(404).json({ error: 'Collection not found' });
+    } else {
+        const token = `share-token-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        collections[index] = { ...collections[index], isPublic: true, sharedToken: token };
+        res.json({ sharedToken: token, collection: collections[index] });
     }
-    const token = `share-token-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    collections[index] = { ...collections[index], isPublic: true, sharedToken: token };
-    return res.json({ sharedToken: token, collection: collections[index] });
 });
 
 // DELETE /:userId/collections/:collectionId/share - Revoke sharing
@@ -440,10 +444,11 @@ router.delete('/:userId/collections/:collectionId/share', (req, res) => {
         c => c.collectionId === collectionId && c.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Collection not found' });
+        res.status(404).json({ error: 'Collection not found' });
+    } else {
+        collections[index] = { ...collections[index], isPublic: false, sharedToken: undefined };
+        res.json({ collection: collections[index] });
     }
-    collections[index] = { ...collections[index], isPublic: false, sharedToken: undefined };
-    return res.json({ collection: collections[index] });
 });
 
 // POST /:userId/items - Add item to wishlist
@@ -478,10 +483,11 @@ router.put('/:userId/items/:itemId', (req, res) => {
         i => i.wishlistItemId === itemId && i.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Item not found' });
+        res.status(404).json({ error: 'Item not found' });
+    } else {
+        items[index] = { ...items[index], ...req.body, wishlistItemId: itemId, userId };
+        res.json(items[index]);
     }
-    items[index] = { ...items[index], ...req.body, wishlistItemId: itemId, userId };
-    return res.json(items[index]);
 });
 
 // DELETE /:userId/items/:itemId - Remove a wishlist item
@@ -492,10 +498,11 @@ router.delete('/:userId/items/:itemId', (req, res) => {
         i => i.wishlistItemId === itemId && i.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Item not found' });
+        res.status(404).json({ error: 'Item not found' });
+    } else {
+        items.splice(index, 1);
+        res.status(204).send();
     }
-    items.splice(index, 1);
-    return res.status(204).send();
 });
 
 // GET /:userId/notifications - Get pending notifications
@@ -515,10 +522,11 @@ router.post('/:userId/notifications/:notificationId/dismiss', (req, res) => {
         n => n.notificationId === notificationId && n.userId === userId
     );
     if (index === -1) {
-        return res.status(404).json({ error: 'Notification not found' });
+        res.status(404).json({ error: 'Notification not found' });
+    } else {
+        notificationsList[index] = { ...notificationsList[index], isRead: true };
+        res.json(notificationsList[index]);
     }
-    notificationsList[index] = { ...notificationsList[index], isRead: true };
-    return res.json(notificationsList[index]);
 });
 
 export default router;
