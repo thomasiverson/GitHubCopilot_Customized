@@ -29,7 +29,7 @@ export default function Wishlist() {
 
   const { data: products, isLoading } = useQuery('products', fetchProducts);
 
-  const wislistedProducts = (products ?? []).filter(p =>
+  const wishlistedProducts = (products ?? []).filter(p =>
     wishlistProductIds.has(p.productId)
   );
 
@@ -51,13 +51,13 @@ export default function Wishlist() {
         <div className="flex flex-col space-y-6">
           <h1 className={`text-3xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} transition-colors duration-300`}>My Wishlist</h1>
 
-          {!isLoggedIn || wislistedProducts.length === 0 ? (
+          {!isLoggedIn || wishlistedProducts.length === 0 ? (
             <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-center py-16 transition-colors duration-300`}>
               Your wishlist is empty — browse products to save items for later
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {wislistedProducts.map(product => (
+              {wishlistedProducts.map(product => (
                 <div key={product.productId} className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(118,184,82,0.3)] flex flex-col`}>
                   <div className={`relative h-56 ${darkMode ? 'bg-gradient-to-t from-gray-700 to-gray-800' : 'bg-gradient-to-t from-gray-100 to-white'} transition-colors duration-300`}>
                     <img

@@ -97,7 +97,7 @@ export const resetWishlist = () => {
 router.get('/', (req, res) => {
   const { userId } = req.query;
   if (!userId) {
-    res.status(400).send('Missing userId query parameter');
+    res.status(400).json({ error: 'Missing userId query parameter' });
   } else {
     const items = wishlistItems.filter(item => item.userId === userId);
     res.json(items);
@@ -111,7 +111,7 @@ router.post('/', (req, res) => {
     item => item.userId === userId && item.productId === productId
   );
   if (existing) {
-    res.status(409).send('Item already exists in wishlist');
+    res.status(409).json({ error: 'Item already exists in wishlist' });
   } else {
     const newItem: WishlistItem = {
       userId,
@@ -134,7 +134,7 @@ router.delete('/:productId', (req, res) => {
     wishlistItems.splice(index, 1);
     res.status(204).send();
   } else {
-    res.status(404).send('Wishlist item not found');
+    res.status(404).json({ error: 'Wishlist item not found' });
   }
 });
 

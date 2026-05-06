@@ -16,6 +16,7 @@ describe('Wishlist API', () => {
     it('should return 400 when userId is missing on GET', async () => {
         const response = await request(app).get('/api/wishlist');
         expect(response.status).toBe(400);
+        expect(response.body.error).toBeDefined();
     });
 
     it('should return empty array for a user with no wishlist items', async () => {
@@ -42,6 +43,7 @@ describe('Wishlist API', () => {
             .post('/api/wishlist')
             .send({ userId: 'test@example.com', productId: 1 });
         expect(response.status).toBe(409);
+        expect(response.body.error).toBeDefined();
     });
 
     it('should retrieve wishlist items for a user', async () => {
@@ -85,5 +87,6 @@ describe('Wishlist API', () => {
         const response = await request(app)
             .delete('/api/wishlist/999?userId=test@example.com');
         expect(response.status).toBe(404);
+        expect(response.body.error).toBeDefined();
     });
 });

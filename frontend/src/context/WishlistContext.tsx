@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
@@ -39,11 +39,12 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     }
   );
 
-  const wishlistProductIds = new Set<number>(
-    (wishlistItems ?? []).map(item => item.productId)
+  const wishlistProductIds = useMemo(
+    () => new Set<number>((wishlistItems ?? []).map(item => item.productId)),
+    [wishlistItems]
   );
 
-  const toggleWishlist = async (productId: number) => {
+  const toggleWishlist = useCallback(async (productId: number) => {
     if (!isLoggedIn || !userEmail) return;
 
     if (wishlistProductIds.has(productId)) {
@@ -57,7 +58,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       });
     }
     queryClient.invalidateQueries(['wishlist', userEmail]);
-  };
+  }, [isLoggedIn, userEmail, wishlistProductIds, queryClient]);
 
   const isWishlisted = (productId: number) => wishlistProductIds.has(productId);
 
