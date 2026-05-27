@@ -100,6 +100,7 @@
  */
 
 import express from 'express';
+import { z } from 'zod';
 import { Product } from '../models/product';
 import { products as seedProducts } from '../seedData';
 
@@ -107,11 +108,27 @@ const router = express.Router();
 
 let products: Product[] = [...seedProducts];
 
+// Add reset function for testing
+export const resetProducts = () => {
+  products = [...seedProducts];
+};
+
+const productSchema = z.object({
+  name: z.string().min(1),
+  price: z.number().positive(),
+  supplierId: z.number().int().positive(),
+});
+
 // Create a new product
 router.post('/', (req, res) => {
-  const newProduct: Product = req.body;
-  products.push(newProduct);
-  res.status(201).json(newProduct);
+  const result = productSchema.safeParse(req.body);
+  if (!result.success) {
+    res.status(400).json({ error: 'Validation failed', details: result.error.issues });
+  } else {
+    const newProduct: Product = req.body;
+    products.push(newProduct);
+    res.status(201).json(newProduct);
+  }
 });
 
 // Get all products
