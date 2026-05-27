@@ -6,6 +6,8 @@ import { Order } from './models/order';
 import { OrderDetail } from './models/orderDetail';
 import { Delivery } from './models/delivery';
 import { OrderDetailDelivery } from './models/orderDetailDelivery';
+import { User } from './models/user';
+import { WishlistItem } from './models/wishlist';
 
 // Suppliers
 export const suppliers: Supplier[] = [
@@ -290,5 +292,43 @@ export const orderDetailDeliveries: OrderDetailDelivery[] = [
         deliveryId: 2,
         quantity: 20,
         notes: "Delivery"
+    }
+];
+
+// Users
+export const users: User[] = [
+    {
+        userId: 1,
+        email: "whiskers@github.com",
+        name: "Whiskers McAdmin",
+        createdAt: new Date("2024-01-01T00:00:00Z").toISOString()
+    },
+    {
+        userId: 2,
+        email: "kitty@cattech.com",
+        name: "Kitty User",
+        createdAt: new Date("2024-01-15T00:00:00Z").toISOString()
+    }
+];
+
+// Wishlist Items
+export const wishlistItems: WishlistItem[] = [
+    {
+        wishlistId: 1,
+        userId: 1,
+        productId: 1,
+        dateAdded: new Date("2024-02-01T00:00:00Z").toISOString()
+    },
+    {
+        wishlistId: 2,
+        userId: 1,
+        productId: 3,
+        dateAdded: new Date("2024-02-05T00:00:00Z").toISOString()
+    },
+    {
+        wishlistId: 3,
+        userId: 2,
+        productId: 5,
+        dateAdded: new Date("2024-02-10T00:00:00Z").toISOString()
     }
 ];

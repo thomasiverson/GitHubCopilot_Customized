@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { api } from '../../../api/config';
 import { useTheme } from '../../../context/ThemeContext';
+import { useAuth } from '../../../context/AuthContext';
+import { useWishlist } from '../../../context/WishlistContext';
 
 interface Product {
   productId: number;
@@ -26,8 +28,11 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [wishlistPending, setWishlistPending] = useState<Record<number, boolean>>({});
   const { data: products, isLoading, error } = useQuery('products', fetchProducts);
   const { darkMode } = useTheme();
+  const { isLoggedIn } = useAuth();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
   const filteredProducts = products?.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -56,6 +61,20 @@ export default function Products() {
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setShowModal(true);
+  };
+
+  const handleWishlistToggle = async (productId: number) => {
+    if (!isLoggedIn) return;
+    setWishlistPending(prev => ({ ...prev, [productId]: true }));
+    try {
+      if (isInWishlist(productId)) {
+        await removeFromWishlist(productId);
+      } else {
+        await addToWishlist(productId);
+      }
+    } finally {
+      setWishlistPending(prev => ({ ...prev, [productId]: false }));
+    }
   };
 
   if (isLoading) {
@@ -125,6 +144,39 @@ export default function Products() {
                       {Math.round(product.discount * 100)}% OFF
                     </div>
                   )}
+                  <button
+                    onClick={e => { e.stopPropagation(); handleWishlistToggle(product.productId); }}
+                    disabled={!isLoggedIn || wishlistPending[product.productId]}
+                    title={isLoggedIn ? (isInWishlist(product.productId) ? 'Remove from wishlist' : 'Add to wishlist') : 'Log in to use wishlist'}
+                    className={`absolute top-2 right-2 p-2 rounded-full transition-colors ${
+                      isLoggedIn
+                        ? 'bg-white/80 dark:bg-gray-700/80 hover:bg-white dark:hover:bg-gray-600 cursor-pointer'
+                        : 'bg-white/50 dark:bg-gray-700/50 cursor-not-allowed'
+                    }`}
+                    aria-label={isInWishlist(product.productId) ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                  >
+                    {wishlistPending[product.productId] ? (
+                      <svg className="w-5 h-5 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className={`w-5 h-5 transition-colors ${
+                          isInWishlist(product.productId)
+                            ? 'text-red-500 fill-red-500'
+                            : isLoggedIn
+                              ? `${darkMode ? 'text-gray-300' : 'text-gray-500'} fill-none`
+                              : 'text-gray-300 fill-none'
+                        }`}
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
                 
                 <div className="p-4 flex flex-col flex-grow">
